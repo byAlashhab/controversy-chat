@@ -1,11 +1,12 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { useState } from "react"
-import { motion } from "framer-motion"
-import elon from "../../public/elon.png"
-import andrew from "../../public/andrew.png"
-import trump from "../../public/trump.png"
+import Image from "next/image";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import elon from "../../public/elon.png";
+import andrew from "../../public/andrew.png";
+import trump from "../../public/trump.png";
+import Chat from "@/components/Chat";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -15,7 +16,7 @@ const containerVariants = {
       staggerChildren: 0.2,
     },
   },
-}
+};
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -27,32 +28,23 @@ const itemVariants = {
       stiffness: 100,
     },
   },
-}
+};
 
-const choiceVariants = {
-  hidden: { opacity: 0, y: -20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
 
 export default function Home() {
-  const [choice, setChoice] = useState("")
+  const [choice, setChoice] = useState("");
 
   return (
     <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="w-full h-screen flex items-center justify-center"
+      className={
+        !choice ? "w-full h-screen flex items-center justify-center" : ""
+      }
     >
       {choice ? (
-        <motion.p
-          variants={choiceVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-4xl font-bold"
-        >
-          You chose {choice}!
-        </motion.p>
+        <Chat choice={choice} />
       ) : (
         <div className="flex gap-6">
           {[
@@ -60,9 +52,14 @@ export default function Home() {
             { src: andrew, alt: "andrew tate", choice: "Andrew Tate" },
             { src: trump, alt: "donald trump", choice: "Donald Trump" },
           ].map((item, index) => (
-            <motion.div key={index} variants={itemVariants} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <Image
-                className="rounded-lg cursor-pointer shadow-lg"
+                className="rounded-lg cursor-pointer shadow-2xl"
                 src={item.src}
                 alt={item.alt}
                 width={200}
@@ -74,5 +71,5 @@ export default function Home() {
         </div>
       )}
     </motion.div>
-  )
+  );
 }
