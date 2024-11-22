@@ -1,38 +1,52 @@
-import { openai } from '@ai-sdk/openai';
-import { streamText } from 'ai';
-
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY || "",
-// });
+import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
 
 export const runtime = "edge";
 
-export async function POST(req: Request, res: Response) {
-  const { messages } = await req.json();
-  console.log(messages);
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: process.env.OPENAI_BASE_URL,
+});
 
-  const result = streamText({
-    model: openai('gpt-4-turbo'),
-    system: 'You are a helpful assistant.',
-    messages: [],
+export async function POST(req: NextRequest, res: NextResponse) {
+  
+  if (req.headers.get("host") !== process.env.HOST) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const { message, choice } = await req.json();
+
+  let assistantContent = "";
+
+  switch (choice) {
+    case "Andrew Tate":
+      assistantContent = "You are Andrew Tate";
+      break;
+    case "Elon Musk":
+      assistantContent = "You are Elon Musk";
+      break;
+    case "Donald Trump":
+      assistantContent = "You are Donald Trump";
+      break;
+  }
+
+  const completion = await openai.chat.completions.create({
+    model: "nvidia/mistral-nemo-minitron-8b-8k-instruct",
+    messages: [
+      {
+        role: "system",
+        content: assistantContent,
+      },
+      {
+        role: "user",
+        content: message,
+      },
+    ],
+    temperature: 1,
   });
 
-  return result.toDataStreamResponse();
-
-  // const response = await openai.chat.completions.create({
-  //   model: "chatgpt-4o-latest",
-  //   messages: [
-  //     {
-  //       role: "system",
-  //       content: "",
-  //     },
-  //     ...messages,
-  //   ],
-  //   stream: true,
-  //   temperature: 1,
-  // });
-
-  // const stream = OpenAIStream(response)
-
-  // return new StreamingTextResponse(stream)
+  return NextResponse.json(completion.choices[0].message);
 }

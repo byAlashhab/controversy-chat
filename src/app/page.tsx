@@ -1,4 +1,4 @@
-import Chat from "@/components/Chat";
+import Chat, { messageType } from "@/components/Chat";
 import { auth, signIn, signOut } from "@/config/auth";
 import Google from "../../public/google.png";
 import Image from "next/image";
@@ -11,10 +11,29 @@ export default async function Home() {
     await signOut();
   }
 
+  async function send(
+    message: string,
+    choice: string
+  ): Promise<messageType> {
+    "use server";
+
+    const res = await fetch("http://localhost:3000/api/openai", {
+      method: "POST",
+      body: JSON.stringify({ message, choice }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const resDa = await res.json();
+
+    return resDa;
+  }
+
   return (
     <>
       {session?.user ? (
-        <Chat logout={logout} />
+        <Chat logout={logout} send={send} userImage={session.user.image} />
       ) : (
         <form
           action={async () => {
@@ -23,7 +42,10 @@ export default async function Home() {
           }}
           className="absolute inset-0 m-auto w-fit h-fit px-6 py-3 rounded-lg shadow-lg"
         >
-          <button type="submit" className=" border px-4 py-2 rounded-lg flex justify-between items-center gap-4 ">
+          <button
+            type="submit"
+            className=" border px-4 py-2 rounded-lg flex justify-between items-center gap-4 "
+          >
             Sign in with Google
             <Image src={Google} width={40} height={40} alt="google icon" />
           </button>
