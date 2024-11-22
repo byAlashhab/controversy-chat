@@ -17,7 +17,7 @@ export default async function Home() {
   ): Promise<messageType> {
     "use server";
 
-    const res = await fetch("http://localhost:3000/api/openai", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/openai`, {
       method: "POST",
       body: JSON.stringify({ message, choice }),
       headers: {
