@@ -8,7 +8,6 @@ export default async function Home() {
 
   async function logout() {
     "use server";
-    await new Promise((res) => setTimeout(res, 3000));
     await signOut();
   }
 
