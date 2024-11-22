@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Loader, SendIcon, User2Icon } from "lucide-react";
+import { Loader, SendIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import elon from "../../public/elon.png";

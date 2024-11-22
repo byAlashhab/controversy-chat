@@ -8,8 +8,8 @@ const openai = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL,
 });
 
-export async function POST(req: NextRequest, res: NextResponse) {
-  
+export async function POST(req: NextRequest) {
+
   if (req.headers.get("host") !== process.env.HOST) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
