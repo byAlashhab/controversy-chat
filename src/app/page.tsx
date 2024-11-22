@@ -8,13 +8,11 @@ export default async function Home() {
 
   async function logout() {
     "use server";
+    await new Promise((res) => setTimeout(res, 3000));
     await signOut();
   }
 
-  async function send(
-    message: string,
-    choice: string
-  ): Promise<messageType> {
+  async function send(message: string, choice: string): Promise<messageType> {
     "use server";
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/openai`, {

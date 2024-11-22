@@ -56,6 +56,7 @@ function Chat({
 
   const [chatMessages, setChatMessages] = useState<messageType[]>([]);
   const [loading, setIsLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -95,8 +96,25 @@ function Chat({
     >
       {choice ? (
         <motion.div className="relative w-5/6 md:w-[600px] lg:w-[800px] h-dvh flex flex-col justify-between pt-5 pb-7 mx-auto">
-          <Button onClick={() => logout()} className="absolute top-5 right-6">
-            logout
+          <Button
+            onClick={async () => {
+              setLogoutLoading(true);
+              logout()
+                .then(() => {
+                  setLogoutLoading(false);
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }}
+            className="absolute top-5 right-6"
+            disabled={logoutLoading}
+          >
+            {logoutLoading ? (
+              <Loader className="animate-spin w-5 h-5" />
+            ) : (
+              "logout"
+            )}
           </Button>
           <AnimatePresence>
             {chatMessages.length === 0 && (
@@ -144,7 +162,9 @@ function Chat({
                   transition: { duration: 0.3, type: "spring" },
                 }}
               >
-                <p className="bg-white rounded-lg py-2 px-4 ">{message.content}</p>
+                <p className="bg-white rounded-lg py-2 px-4 ">
+                  {message.content}
+                </p>
                 {message.role === "user" ? (
                   <img
                     src={userImage || ""}
