@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   const completion = await openai.chat.completions.create({
-    model: "nvidia/mistral-nemo-minitron-8b-8k-instruct",
+    model: "mistralai/mixtral-8x7b-instruct-v0.1",
     messages: [
       {
         role: "system",
